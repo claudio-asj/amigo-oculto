@@ -22,7 +22,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
         footer={room.drawn ? "Abra o link para ver quem você tirou." : details || "Toque para entrar com seu nome."}
       />
     ) : (
-      <OgCard title="Sorteio sem cadastro e sem ninguém espiar." />
+      <OgCard title={"Sorteio de amigo oculto\nsimples e grátis"} />
     ),
     { ...size, fonts: await fonts() },
   );

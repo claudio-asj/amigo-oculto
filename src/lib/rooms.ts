@@ -107,6 +107,13 @@ export function createRoom(input: { name?: unknown; budget?: unknown; eventDate?
   if (!name) throw new AppError("Dê um nome para o grupo.");
   const budget = clean(input.budget, 40) || null;
   const eventDate = clean(input.eventDate, 20) || null;
+  if (eventDate) {
+    const [y, m, d] = eventDate.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate) || dt.getMonth() !== m - 1 || dt.getDate() !== d) {
+      throw new AppError("A data da troca não existe. Escolha de novo o dia, o mês e o ano.");
+    }
+  }
 
   const id = roomId();
   const adminToken = randomToken();

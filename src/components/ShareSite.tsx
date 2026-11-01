@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, Share2 } from "lucide-react";
 import { useState } from "react";
 import { useCopy } from "./api";
 
@@ -33,15 +34,17 @@ export function ShareSite({ url }: { url: string }) {
     <div className="flex flex-col items-center gap-3">
       <button type="button" className="btn-paper btn-paper--green" onClick={share}>
         {copied ? (
-          "Link copiado ✓"
+          <>
+            Link copiado <Check size={22} aria-hidden />
+          </>
         ) : (
           <>
-            Compartilhar o site <span aria-hidden>📤</span>
+            <Share2 size={22} aria-hidden /> Compartilhar o site
           </>
         )}
       </button>
       <a
-        className="link-paper text-sm font-bold"
+        className="link-paper inline-flex min-h-11 items-center font-bold"
         href={`https://wa.me/?text=${encodeURIComponent(`${TEXT} ${url}`)}`}
         target="_blank"
         rel="noreferrer"

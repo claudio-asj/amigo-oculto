@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatDate, type PublicRoom } from "./api";
+import { Icon3D } from "./Icons";
 import { Logo } from "./Paper";
 
 export function RoomHeader({ room }: { room: PublicRoom }) {
@@ -15,14 +16,14 @@ export function RoomHeader({ room }: { room: PublicRoom }) {
           <p className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 font-bold">
             {room.budget && (
               <span>
-                <span aria-hidden>💰 </span>
+                <Icon3D name="dinheiro" size={26} className="mr-1.5" />
                 <span className="sr-only">Valor: </span>
                 {room.budget}
               </span>
             )}
             {date && (
               <span>
-                <span aria-hidden>📅 </span>
+                <Icon3D name="calendario" size={26} className="mr-1.5" />
                 <span className="sr-only">Data: </span>
                 {date}
               </span>
@@ -52,8 +53,8 @@ export function ParticipantTags({ room, me }: { room: PublicRoom; me?: string })
 
 export function Loading() {
   return (
-    <p className="font-hand animate-pulse py-20 text-center text-4xl" role="status">
-      Desembrulhando…
+    <p className="paper-card font-hand mt-16 animate-pulse text-center text-4xl text-green" role="status">
+      Carregando…
     </p>
   );
 }
@@ -63,7 +64,7 @@ export function NotFound({ message }: { message: string }) {
     <>
       <Logo small />
       <div className="paper-card tape tilt-l text-center">
-        <p className="font-hand text-4xl text-red">Ops!</p>
+        <h1 className="font-hand text-4xl text-red">Ops!</h1>
         <p className="mt-2">{message}</p>
         <Link href="/" className="btn-paper btn-paper--green mt-5">
           Criar uma sala nova

@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Amigo Oculto",
     short_name: "Amigo Oculto",
-    description: "Sorteio de amigo oculto sem cadastro e sem ninguém espiar.",
+    description: "Sorteio de amigo oculto simples e grátis. Sem cadastro.",
     lang: "pt-BR",
     start_url: "/",
     display: "standalone",

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Caveat, Nunito, Rubik_Mono_One } from "next/font/google";
 import "./globals.css";
+import { Credits } from "@/components/Credits";
 import { SITE_NAME, SITE_URL } from "@/lib/brand";
 
 const caveat = Caveat({ variable: "--font-caveat", subsets: ["latin"], weight: ["600", "700"] });
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="mx-auto flex w-full max-w-[560px] flex-col gap-8 px-4 py-8 sm:py-12">
           {children}
         </main>
+        <Credits />
       </body>
     </html>
   );

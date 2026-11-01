@@ -70,6 +70,7 @@ export function OgCard({
             fontFamily: "Caveat",
             fontSize: title.length > 28 ? 78 : 96,
             lineHeight: 1.05,
+            whiteSpace: "pre-line",
             color: green ? "#fff" : C.red,
             marginTop: kicker ? 6 : 0,
           }}

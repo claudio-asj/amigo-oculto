@@ -3,7 +3,10 @@
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api, useCopy, type PublicRoom } from "./api";
-import { ErrorNote, Star } from "./Paper";
+import { Check } from "lucide-react";
+import { siWhatsapp } from "simple-icons";
+import { BrandIcon, Icon3D } from "./Icons";
+import { ErrorNote, Help, Star } from "./Paper";
 import { Loading, NotFound, ParticipantTags, RoomHeader } from "./RoomHeader";
 
 const MIN = 3;
@@ -106,7 +109,7 @@ export function AdminClient() {
             target="_blank"
             rel="noreferrer"
           >
-            Guardar no meu WhatsApp
+            <BrandIcon icon={siWhatsapp} size={22} /> Guardar no meu WhatsApp
           </a>
         </div>
         <CopyRow url={adminUrl} label="Ou copiar o endereço" variant="paper" />
@@ -116,7 +119,7 @@ export function AdminClient() {
         <section className="paper-card tape tilt-r">
           <h2 className="font-hand text-3xl text-green">Passo 1: chame as pessoas</h2>
           <p className="mb-3">
-            Toque no botão verde, escolha o grupo da família no WhatsApp e envie. Cada pessoa abre o
+            Toque em “Mandar convite no WhatsApp”, escolha o grupo da família e envie. Cada pessoa abre o
             link, escreve o nome e inventa uma senha.
           </p>
           <a
@@ -125,7 +128,7 @@ export function AdminClient() {
             target="_blank"
             rel="noreferrer"
           >
-            Mandar convite no WhatsApp
+            <BrandIcon icon={siWhatsapp} size={24} /> Mandar convite no WhatsApp
           </a>
           <p className="mt-5 font-bold">Você também vai participar do sorteio?</p>
           <p className="mb-2">Então entre pelo convite, igual a todo mundo:</p>
@@ -177,8 +180,10 @@ export function AdminClient() {
 
       {room.drawn ? (
         <section className="paper-card tape tilt-r relative text-center">
-          <Star className="absolute -right-4 -top-6 h-14 w-14" />
-          <p className="font-hand text-4xl text-green">Sorteio feito! 🎉</p>
+          <Star className="absolute -top-6 right-0 h-14 w-14" />
+          <p className="font-hand flex items-center justify-center gap-2 text-4xl text-green">
+            Sorteio feito! <Icon3D name="festa" size={44} />
+          </p>
           <p className="mt-2">
             Agora avise o grupo: cada pessoa abre o mesmo link do convite e vê{" "}
             <strong>só quem ela tirou</strong>. Se você também participa, abra o convite para ver o
@@ -193,7 +198,7 @@ export function AdminClient() {
               target="_blank"
               rel="noreferrer"
             >
-              Avisar no WhatsApp
+              <BrandIcon icon={siWhatsapp} size={22} /> Avisar no WhatsApp
             </a>
           </div>
         </section>
@@ -224,10 +229,37 @@ export function AdminClient() {
               ? `Faltam ${MIN - room.participants.length} pessoa${MIN - room.participants.length > 1 ? "s" : ""} para poder sortear`
               : busy
                 ? "Misturando os papéis…"
-                : "Bora sortear! 🎁"}
+                : (
+                  <>
+                    <Icon3D name="presente" size={30} /> Bora sortear!
+                  </>
+                )}
           </button>
         </section>
       )}
+
+      <section className="paper-card tilt-l">
+        <h2 className="font-hand mb-2 text-3xl text-green">Dúvidas</h2>
+        <Help q="Eu também posso participar?">
+          Pode. Toque em “Eu também vou participar” e entre com o seu nome e uma senha, igual a todo
+          mundo. Você não vai ver o resultado dos outros, só o seu.
+        </Help>
+        <Help q="Alguém entrou com o nome errado ou entrou duas vezes. O que faço?">
+          Antes do sorteio, toque no × ao lado do nome, na lista do passo 2. A pessoa pode entrar de
+          novo pelo convite.
+        </Help>
+        <Help q="Alguém esqueceu a senha antes do sorteio.">
+          Tire o nome da pessoa da lista (no ×) e peça para ela entrar de novo pelo convite, com uma
+          senha nova.
+        </Help>
+        <Help q="Perdi o endereço desta página. E agora?">
+          Procure no histórico do navegador deste celular: a página se chama “Organizar”. Se não
+          achar, não tem outro jeito de voltar. Por isso vale guardar o endereço no seu WhatsApp.
+        </Help>
+        <Help q="Dá para sortear de novo?">
+          Não. Depois do sorteio o resultado fica fixo, para ninguém poder trocar quem tirou quem.
+        </Help>
+      </section>
     </>
   );
 }
@@ -253,7 +285,13 @@ function CopyRow({ url, label, variant }: { url: string; label: string; variant?
           }
         }}
       >
-        {done ? "Copiado! Agora é só colar ✓" : label}
+        {done ? (
+          <>
+            Copiado! Agora é só colar <Check size={20} aria-hidden />
+          </>
+        ) : (
+          label
+        )}
       </button>
       <span role="status" className="sr-only">
         {done ? "Link copiado" : ""}

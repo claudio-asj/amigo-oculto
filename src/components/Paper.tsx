@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cloneElement, useId, type ReactElement } from "react";
 
-const LETTER_STYLES = [
+export const LETTER_STYLES = [
   { bg: "var(--red)", fg: "#fff", r: -4 },
   { bg: "var(--paper)", fg: "var(--ink)", r: 3 },
   { bg: "var(--green)", fg: "#fff", r: -2 },
@@ -84,20 +84,34 @@ export function Ornament({ className = "", color = "var(--red)" }: { className?:
 export function Field({
   label,
   hint,
+  error,
   children,
 }: {
   label: string;
   hint?: string;
-  children: ReactElement<{ id?: string; "aria-describedby"?: string }>;
+  /** Erro deste campo: aparece embaixo dele e marca o campo como inválido (WCAG 3.3.1). */
+  error?: string | null;
+  children: ReactElement<{ id?: string; "aria-describedby"?: string; "aria-invalid"?: boolean }>;
 }) {
   const id = useId();
   const hintId = `${id}-hint`;
+  const errorId = `${id}-error`;
+  const describedBy = [error && errorId, hint && hintId].filter(Boolean).join(" ") || undefined;
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="font-extrabold">
         {label}
       </label>
-      {cloneElement(children, { id, "aria-describedby": hint ? hintId : undefined })}
+      {cloneElement(children, {
+        id,
+        "aria-describedby": describedBy,
+        "aria-invalid": error ? true : undefined,
+      })}
+      {error && (
+        <span id={errorId} className="field-error">
+          {error}
+        </span>
+      )}
       {hint && (
         <span id={hintId} className="text-sm text-ink-soft">
           {hint}

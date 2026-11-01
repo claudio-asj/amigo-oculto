@@ -1,6 +1,10 @@
 import { Help, Logo, Ornament, Tree } from "@/components/Paper";
+import { AdFooter } from "@/components/AdFooter";
+import { ChristmasCountdown, GiftAnimation } from "@/components/ChristmasCountdown";
 import { CreateRoomForm } from "@/components/CreateRoomForm";
+import { Icon3D, type Icon3DName } from "@/components/Icons";
 import { ShareSite } from "@/components/ShareSite";
+import { ADSENSE_CLIENT } from "@/lib/ads";
 import { SITE_URL } from "@/lib/brand";
 
 const jsonLd = {
@@ -23,15 +27,12 @@ export default function Home() {
     <>
       <header className="flex flex-col items-center gap-4 pt-4 text-center">
         <Logo />
-        <h1 className="font-hand text-3xl leading-tight sm:text-4xl">
-          <span className="sr-only">Amigo oculto online: </span>
-          Sorteio sem cadastro
-          <br />e sem ninguém espiar.
-        </h1>
+        <GiftAnimation />
+        <ChristmasCountdown />
       </header>
 
       <section className="paper-card tape tilt-l edge-zigzag">
-        <h2 className="font-hand text-4xl text-green">Organizar um amigo oculto</h2>
+        <h1 className="font-hand text-4xl text-green">Organizar um amigo oculto</h1>
         <p className="mb-5">
           Só quem vai organizar preenche isto. Quem vai participar não precisa: vai receber um
           convite pelo WhatsApp.
@@ -40,19 +41,17 @@ export default function Home() {
       </section>
 
       <section className="paper-card tilt-r relative">
-        <Tree className="absolute -right-3 -top-10 h-20 w-16" />
+        <Tree className="absolute -top-10 right-1 h-20 w-16" />
         <h2 className="font-hand text-3xl text-red">Como funciona</h2>
         <ol className="mt-3 flex list-none flex-col gap-3">
           {[
-            ["✂️", "Quem organiza preenche o nome do grupo aqui em cima e cria o sorteio."],
-            ["📨", "Manda o convite no grupo do WhatsApp. Cada pessoa toca no link, escreve o nome e inventa uma senha de 4 números."],
-            ["🎁", "Quando todo mundo tiver entrado, quem organiza aperta o botão de sortear."],
-            ["🤫", "Cada pessoa abre o mesmo link de novo e vê, num envelope, quem tirou. Ninguém vê o dos outros, nem quem organizou."],
+            ["tesoura", "Quem organiza preenche o formulário “Organizar um amigo oculto” e cria o sorteio."],
+            ["envelope-chegando", "Manda o convite no grupo do WhatsApp. Cada pessoa toca no link, escreve o nome e inventa uma senha de 4 números."],
+            ["presente", "Quando todo mundo tiver entrado, quem organiza aperta o botão de sortear."],
+            ["segredo", "Cada pessoa abre o mesmo link de novo e vê, num envelope, quem tirou. Ninguém vê o dos outros, nem quem organizou."],
           ].map(([icon, text]) => (
-            <li key={text} className="flex gap-3">
-              <span aria-hidden className="text-xl">
-                {icon}
-              </span>
+            <li key={text} className="flex items-start gap-3">
+              <Icon3D name={icon as Icon3DName} size={40} />
               <span>{text}</span>
             </li>
           ))}
@@ -83,15 +82,25 @@ export default function Home() {
         <ShareSite url={SITE_URL.href} />
       </section>
 
+      {/* AdSense só aqui na home. Nas páginas de sorteio (/s/...) o script do
+          Google conseguiria ler quem a pessoa tirou e a chave de quem organiza. */}
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossOrigin="anonymous"
+      />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
-      <footer className="flex items-center justify-center gap-3 pb-6 text-sm font-bold opacity-80">
+      <AdFooter />
+
+      <footer className="paper-card tilt-l mx-auto flex flex-wrap items-center justify-center gap-3 !px-6 !py-3 font-bold">
         <Ornament className="h-8 w-7" />
         <span>
-          Feliz Natal <span aria-hidden>🎄</span>
+          Feliz Natal <Icon3D name="arvore" size={28} />
         </span>
         <Ornament className="h-8 w-7" color="var(--green)" />
       </footer>

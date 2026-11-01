@@ -66,3 +66,24 @@ Só a home é indexável. `/s/` e `/api/` ficam fora do `robots.txt`, e as
 páginas de sala levam `noindex`.
 
 **Backup:** basta copiar o arquivo `.db` do volume.
+
+## Anúncio
+
+O AdSense carrega só na página inicial. As páginas de sorteio (`/s/...`) não
+carregam, porque o script do Google conseguiria ler quem a pessoa tirou e a
+chave de quem organiza. O bloco fica no fim da página: crie uma unidade de
+anúncio de display no AdSense e cole o `data-ad-slot` em `src/lib/ads.ts`.
+Deixe os anúncios automáticos desligados no painel para o Google não pôr
+faixas fixas ou telas cheias no celular.
+
+## Licença e créditos
+
+Software livre sob a [GPL-3.0](./LICENSE). Feito por Claudio Junior
+([claudiojr.dev.br](https://claudiojr.dev.br),
+[@claudioasj@organica.social](https://organica.social/@claudioasj)).
+
+- Ícones 3D: [Fluent Emoji](https://github.com/microsoft/fluentui-emoji), da
+  Microsoft, licença MIT (`public/icons/3d/LICENSE`).
+- Ícones de interface: [Lucide](https://lucide.dev) (ISC) e
+  [Simple Icons](https://simpleicons.org) (CC0).
+- Fontes: Caveat, Nunito e Rubik Mono One (SIL Open Font License).

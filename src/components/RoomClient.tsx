@@ -3,6 +3,8 @@
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api, formatDate, type Me, type PublicRoom } from "./api";
+import { Check } from "lucide-react";
+import { Icon3D } from "./Icons";
 import { ErrorNote, Field, Help, Ornament, Star } from "./Paper";
 import { Loading, NotFound, ParticipantTags, RoomHeader } from "./RoomHeader";
 
@@ -53,23 +55,30 @@ export function RoomClient() {
 function Outside({ room, reload }: { room: PublicRoom; reload: () => void }) {
   const [mode, setMode] = useState<"join" | "login">(room.drawn ? "login" : "join");
   const [error, setError] = useState<string | null>(null);
+  const [fieldErr, setFieldErr] = useState<{ name?: string; pin?: string }>({});
   const [busy, setBusy] = useState(false);
   const joining = mode === "join";
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const f = new FormData(form);
     const name = String(f.get("name") ?? "").trim();
     const pin = String(f.get("pin") ?? "");
     // Validação nossa, em português: a do navegador pode aparecer em inglês.
-    if (!name) return setError("Escreva o seu nome no primeiro campo.");
+    const errs: { name?: string; pin?: string } = {};
+    if (!name) errs.name = "Escreva o seu nome aqui.";
     if (!/^\d{4}$/.test(pin)) {
-      return setError(
-        `A senha precisa ter 4 números. Você digitou ${pin.length === 0 ? "nenhum" : pin.length}.`,
-      );
+      errs.pin = `A senha precisa ter 4 números. Você digitou ${pin.length === 0 ? "nenhum" : pin.length}.`;
+    }
+    setFieldErr(errs);
+    setError(null);
+    const first = errs.name ? "name" : errs.pin ? "pin" : null;
+    if (first) {
+      (form.elements.namedItem(first) as HTMLInputElement).focus();
+      return;
     }
     setBusy(true);
-    setError(null);
     try {
       await api(`/api/rooms/${room.id}/${mode}`, { body: { name, pin } });
       reload();
@@ -81,6 +90,7 @@ function Outside({ room, reload }: { room: PublicRoom; reload: () => void }) {
 
   function switchMode() {
     setError(null);
+    setFieldErr({});
     setMode(joining ? "login" : "join");
   }
 
@@ -91,7 +101,7 @@ function Outside({ room, reload }: { room: PublicRoom; reload: () => void }) {
           <h2 className="font-hand text-3xl text-green">Chegou o convite pro amigo oculto!</h2>
           <p className="mb-3">É bem simples. Funciona assim:</p>
           <ol className="steps">
-            <li>Escreva o seu nome aqui embaixo.</li>
+            <li>Escreva o seu nome no campo “Seu nome”.</li>
             <li>Invente uma senha de 4 números e anote num papel.</li>
             <li>
               Espere quem organizou fazer o sorteio. Depois abra <strong>este mesmo link</strong> de
@@ -116,6 +126,7 @@ function Outside({ room, reload }: { room: PublicRoom; reload: () => void }) {
           <Field
             label="Seu nome"
             hint={joining ? "Do jeito que a família te chama. Exemplo: Tia Lurdes." : undefined}
+            error={fieldErr.name}
           >
             <input
               name="name"
@@ -127,6 +138,7 @@ function Outside({ room, reload }: { room: PublicRoom; reload: () => void }) {
           </Field>
           <Field
             label={joining ? "Invente uma senha de 4 números" : "Sua senha de 4 números"}
+            error={fieldErr.pin}
             hint={
               joining
                 ? "Só números, por exemplo 2512. Anote num papel: vai precisar dela se trocar de celular."
@@ -193,7 +205,7 @@ function Inside({ room, me, reload }: { room: PublicRoom; me: Me; reload: () => 
         <section className="paper-card tape tilt-l relative">
           <Ornament className="absolute -left-3 -top-6 h-14 w-11 rotate-[-12deg]" />
           <p className="font-hand text-center text-4xl text-red">
-            Pronto, {me.name}! <span aria-hidden>👋</span>
+            Pronto, {me.name}! <Icon3D name="tchau" size={44} className="-mt-2" />
           </p>
           <p className="mt-2 mb-4 text-center font-bold">Você já está no sorteio. O que acontece agora:</p>
           <ol className="steps">
@@ -218,7 +230,7 @@ function Inside({ room, me, reload }: { room: PublicRoom; me: Me; reload: () => 
 
       <RoomHelp drawn={room.drawn} />
 
-      <section className="text-center">
+      <section className="paper-card tilt-r text-center">
         <p className="font-bold">Este celular é de outra pessoa, e não de {me.name}?</p>
         <button className="link-paper mt-2 min-h-12 font-bold" onClick={logout}>
           Sair para outra pessoa entrar
@@ -241,11 +253,13 @@ function Envelope({
   const date = formatDate(room.eventDate);
   return (
     <section className="flex flex-col items-center gap-2 text-center">
-      <p className="font-hand text-4xl">{name}, o sorteio foi feito!</p>
-      <p className="font-bold">
+      <div className="paper-card tape tilt-l w-full">
+        <p className="font-hand text-4xl text-red">{name}, o sorteio foi feito!</p>
+        <p className="mt-1 font-bold">
         Quem você tirou está dentro do envelope. Antes de abrir, veja se ninguém está olhando a
-        sua tela. <span aria-hidden>🤫</span>
-      </p>
+        sua tela. <Icon3D name="segredo" size={28} />
+        </p>
+      </div>
       <button
         type="button"
         className={`envelope ${open ? "is-open" : ""}`}
@@ -269,8 +283,9 @@ function Envelope({
           <Star className="h-14 w-14" />
         </span>
       </button>
-      <p className="text-lg font-bold" aria-hidden>
-        {open ? "Toque no envelope para fechar de novo" : "👆 Toque no envelope para abrir"}
+      <p className="paper-card tilt-r flex items-center gap-2 !px-5 !py-3 text-lg font-bold" aria-hidden>
+        {!open && <Icon3D name="apontando" size={32} />}
+        {open ? "Toque no envelope para fechar de novo" : "Toque no envelope para abrir"}
       </p>
       <p id="resultado" role="status" className="sr-only">
         {open ? `Você vai dar presente para ${match.name}.` : ""}
@@ -340,7 +355,8 @@ function Wishlist({ roomId, initial }: { roomId: string; initial: string }) {
 
   return (
     <section className="paper-card tilt-l">
-      <h2 id="cartinha-title" className="font-hand text-3xl text-red">
+      <h2 id="cartinha-title" className="font-hand flex items-center gap-2 text-3xl text-red">
+        <Icon3D name="cartinha" size={40} />
         Minha cartinha
       </h2>
       <p id="cartinha-hint" className="mb-3">
@@ -370,7 +386,11 @@ function Wishlist({ roomId, initial }: { roomId: string; initial: string }) {
         </button>
         <span id="cartinha-status" role="status" className="font-bold">
           {status === "dirty" && <span className="text-ink-soft">Salvando daqui a pouco…</span>}
-          {status === "saved" && <span className="text-green">Cartinha salva ✓</span>}
+          {status === "saved" && (
+            <span className="inline-flex items-center gap-1 text-green">
+              Cartinha salva <Check size={20} aria-hidden />
+            </span>
+          )}
           {status === "error" && (
             <span className="text-red">Não conseguiu salvar. Confira a internet e toque no botão.</span>
           )}
