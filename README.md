@@ -67,15 +67,6 @@ páginas de sala levam `noindex`.
 
 **Backup:** basta copiar o arquivo `.db` do volume.
 
-## Anúncio
-
-O AdSense carrega só na página inicial. As páginas de sorteio (`/s/...`) não
-carregam, porque o script do Google conseguiria ler quem a pessoa tirou e a
-chave de quem organiza. O bloco fica no fim da página: crie uma unidade de
-anúncio de display no AdSense e cole o `data-ad-slot` em `src/lib/ads.ts`.
-Deixe os anúncios automáticos desligados no painel para o Google não pôr
-faixas fixas ou telas cheias no celular.
-
 ## Licença e créditos
 
 Software livre sob a [GPL-3.0](./LICENSE). Feito por Claudio Junior

@@ -1,10 +1,8 @@
 import { Help, Logo, Ornament, Tree } from "@/components/Paper";
-import { AdFooter } from "@/components/AdFooter";
 import { ChristmasCountdown, GiftAnimation } from "@/components/ChristmasCountdown";
 import { CreateRoomForm } from "@/components/CreateRoomForm";
 import { Icon3D, type Icon3DName } from "@/components/Icons";
 import { ShareSite } from "@/components/ShareSite";
-import { ADSENSE_CLIENT } from "@/lib/ads";
 import { SITE_URL } from "@/lib/brand";
 
 const jsonLd = {
@@ -82,20 +80,10 @@ export default function Home() {
         <ShareSite url={SITE_URL.href} />
       </section>
 
-      {/* AdSense só aqui na home. Nas páginas de sorteio (/s/...) o script do
-          Google conseguiria ler quem a pessoa tirou e a chave de quem organiza. */}
-      <script
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-        crossOrigin="anonymous"
-      />
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-
-      <AdFooter />
 
       <footer className="paper-card tilt-l mx-auto flex flex-wrap items-center justify-center gap-3 !px-6 !py-3 font-bold">
         <Ornament className="h-8 w-7" />
