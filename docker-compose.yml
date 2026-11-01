@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        - SITE_URL=${SITE_URL:-https://amigooculto.claudiojr.dev.br}
+    restart: unless-stopped
+    environment:
+      - DATABASE_PATH=/app/data/amigo-oculto.db
+      - SITE_URL=${SITE_URL:-https://amigooculto.claudiojr.dev.br}
+    volumes:
+      - amigo-data:/app/data
+    expose:
+      - "3000"
+
+volumes:
+  amigo-data:

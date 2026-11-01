@@ -1,26 +1,397 @@
 @import "tailwindcss";
 
+/* Cores de cartolina */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --kraft: #c9a57a;
+  --kraft-dark: #a9845a;
+  --paper: #fbf6ea;
+  --ink: #2b211b;
+  --ink-soft: #5e4e42;
+  --red: #c8312f;
+  --red-dark: #962221;
+  --green: #2f6b45;
+  --green-dark: #204c31;
+  --gold: #e0b345;
+  --on-kraft: var(--ink); /* texto direto sobre a mesa */
+  --tape: #f3e3a3b3;
+  --tape-red: #e9a2a0b3;
+  --shadow: 2px 3px 0 rgba(0, 0, 0, 0.18);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --kraft: #2a2230;
+    --kraft-dark: #1c1622;
+    --on-kraft: var(--paper);
+    --shadow: 3px 4px 0 rgba(0, 0, 0, 0.45);
   }
 }
 
+@theme inline {
+  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+  --font-cut: var(--font-rubik-mono), "Arial Black", sans-serif;
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-red: var(--red);
+  --color-green: var(--green);
+  --color-gold: var(--gold);
+}
+
+html {
+  background: var(--kraft);
+  /* 18px de base: o público inclui gente de 70+ lendo no celular. Tudo em rem cresce junto. */
+  font-size: 112.5%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--kraft);
+  background-image: var(--noise);
+  color: var(--on-kraft);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+/* ---------- Papel ---------- */
+.paper-card {
+  position: relative;
+  background: var(--paper);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  color: var(--ink);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  animation: drop-in 250ms cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+.paper-card--red {
+  background-color: var(--red);
+  color: #fff;
+}
+.paper-card--green {
+  background-color: var(--green);
+  color: #fff;
+}
+
+.tilt-l {
+  --tilt: -1.5deg;
+  rotate: var(--tilt);
+}
+.tilt-r {
+  --tilt: 1.2deg;
+  rotate: var(--tilt);
+}
+
+/* Fita adesiva */
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  width: 96px;
+  height: 26px;
+  translate: -50% 0;
+  rotate: -5deg;
+  background: var(--tape);
+  mask: conic-gradient(from -45deg at left, #0000 90deg, #000 0) left / 51% 6px repeat-y,
+    conic-gradient(from 135deg at right, #0000 90deg, #000 0) right / 51% 6px repeat-y;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+.tape-red::before {
+  background: repeating-linear-gradient(45deg, var(--tape-red) 0 6px, #fff8 6px 12px);
+}
+
+/* Borda de tesoura de picote (embaixo) */
+.edge-zigzag {
+  --z: 10px;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--z) 51% repeat-x,
+    linear-gradient(#000 0 0) top / 100% calc(100% - var(--z) / 2) no-repeat;
+  padding-bottom: calc(24px + var(--z) / 2);
+}
+
+/* Borda rasgada (cima e baixo) */
+.edge-torn {
+  clip-path: polygon(
+    0% 2%, 6% 0%, 13% 1.5%, 21% 0.2%, 29% 1.8%, 37% 0.4%, 45% 1.6%, 54% 0%, 62% 1.4%, 70% 0.3%,
+    78% 1.9%, 86% 0.5%, 93% 1.7%, 100% 0.4%,
+    100% 98.5%, 94% 100%, 87% 98.2%, 79% 99.6%, 71% 98%, 63% 99.8%, 55% 98.4%, 46% 100%,
+    38% 98.3%, 30% 99.7%, 22% 98.1%, 14% 99.8%, 7% 98.4%, 0% 99.6%
+  );
+}
+
+/* ---------- Botões ---------- */
+.btn-paper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 10px 22px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background-color: var(--red);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  border-bottom: 3px solid var(--red-dark);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 120ms, box-shadow 120ms;
+}
+.btn-paper:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-paper:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+.btn-paper:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-paper--green {
+  background-color: var(--green);
+  border-bottom-color: var(--green-dark);
+}
+.btn-paper--paper {
+  background-color: var(--paper);
+  color: var(--ink);
+  border-bottom-color: var(--kraft-dark);
+}
+/* Foco: linha de recorte em tinta entre dois halos de papel.
+   Contrasta tanto sobre o kraft (claro e escuro) quanto sobre os cartões. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px dashed var(--ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 7px var(--paper);
+}
+
+/* ---------- Campos ---------- */
+.input-paper {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  font-size: 20px;
+  color: var(--ink);
+  background: #fffdf6;
+  background-image: linear-gradient(transparent calc(100% - 2px), #9cc3e4 0);
+  border: 2px dashed var(--ink-soft);
+}
+.input-paper:focus {
+  border-style: solid;
+  border-color: var(--green);
+}
+.input-paper::placeholder {
+  color: #7a6a5c;
+}
+.pin-input {
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.6em;
+  text-align: center;
+  font-size: 26px;
+  max-width: 200px;
+}
+
+.link-paper {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+/* ---------- Etiqueta de presente ---------- */
+.gift-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px 6px 24px;
+  font-weight: 700;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%);
+}
+.gift-tag::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background: var(--kraft);
+  box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.3);
+}
+.gift-tag:nth-child(4n + 1) { background: #f6d9d4; rotate: -1deg; }
+.gift-tag:nth-child(4n + 2) { background: #d6e8d6; rotate: 1deg; }
+.gift-tag:nth-child(4n + 3) { background: #f7e7b4; rotate: -0.5deg; }
+.gift-tag:nth-child(4n + 4) { background: #d5e4f0; rotate: 1.5deg; }
+
+/* ---------- Logo de recorte ---------- */
+.cut-letter {
+  display: inline-block;
+  padding: 2px 6px;
+  margin: 2px 1px;
+  font-family: var(--font-cut);
+  line-height: 1.1;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Envelope do sorteio ---------- */
+.envelope {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  width: 100%;
+  max-width: 360px;
+  margin: 24px auto 8px;
+  cursor: pointer;
+  perspective: 800px;
+}
+.envelope__body {
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  box-shadow: var(--shadow);
+  z-index: 2;
+  clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+}
+.envelope__back {
+  position: absolute;
+  inset: 0;
+  background: var(--red-dark);
+  z-index: 0;
+}
+.envelope__flap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 60%;
+  background: #b32a28;
+  background-image: var(--noise);
+  background-blend-mode: soft-light;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top;
+  transition: transform 500ms ease;
+  z-index: 3;
+}
+.envelope__letter {
+  position: absolute;
+  inset: 8% 6% 6%;
+  background: var(--paper);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.3, 1.1) 200ms;
+}
+.envelope__seal {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  translate: -50% -50%;
+  z-index: 4;
+  transition: opacity 200ms;
+}
+.envelope.is-open .envelope__flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+.envelope.is-open .envelope__letter {
+  transform: translateY(-62%);
+  z-index: 1;
+}
+.envelope.is-open .envelope__seal {
+  opacity: 0;
+}
+.envelope.is-open {
+  margin-top: 140px;
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* ---------- Ajuda (perguntas que abrem e fecham) ---------- */
+.help summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 0;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.help summary::-webkit-details-marker {
+  display: none;
+}
+.help summary::before {
+  content: "+";
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: var(--green);
+  color: #fff;
+  font-weight: 800;
+}
+.help[open] summary::before {
+  content: "−";
+}
+.help + .help {
+  border-top: 2px dashed color-mix(in srgb, var(--ink-soft) 40%, transparent);
+}
+.help p {
+  padding: 0 0 12px 38px;
+}
+
+/* Caixa de passo a passo numerado */
+.steps {
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* Número posicionado à parte: com flex, cada <strong> no meio da frase virava uma coluna. */
+.steps li {
+  counter-increment: step;
+  position: relative;
+  min-height: 32px;
+  padding-left: 44px;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
+  rotate: -4deg;
 }
