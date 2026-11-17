@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api, formatDate, type Me, type PublicRoom } from "./api";
@@ -45,8 +46,38 @@ export function RoomClient() {
   return (
     <>
       <RoomHeader room={room} />
+      <OrganizerLink roomId={room.id} drawn={room.drawn} />
       {me ? <Inside room={room} me={me} reload={load} /> : <Outside room={room} reload={load} />}
     </>
+  );
+}
+
+// Quem criou a sala neste celular ganha um atalho de volta para a página de
+// organizar (o token fica salvo no localStorage quando a sala é criada).
+function OrganizerLink({ roomId, drawn }: { roomId: string; drawn: boolean }) {
+  // Só renderiza depois que a sala carregou no navegador, então dá para ler o
+  // localStorage direto, sem risco de diferença com o HTML do servidor.
+  const [token] = useState<string | null>(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("ao_admin") ?? "{}");
+      return typeof saved[roomId] === "string" ? saved[roomId] : null;
+    } catch {
+      return null;
+    }
+  });
+  if (!token) return null;
+  return (
+    <section className="paper-card paper-card--red tilt-l text-center">
+      <p className="font-bold">Foi você quem criou este amigo oculto.</p>
+      <p className="mt-1">
+        {drawn
+          ? "Na página de organizar você vê a lista de quem participou."
+          : "Na página de organizar você vê quem já entrou e faz o sorteio."}
+      </p>
+      <Link href={`/s/${roomId}/admin#k=${token}`} className="btn-paper btn-paper--paper mt-3 w-full">
+        Ir para a página de organizar
+      </Link>
+    </section>
   );
 }
 

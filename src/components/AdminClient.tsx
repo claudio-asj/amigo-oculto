@@ -226,7 +226,9 @@ export function AdminClient() {
             }}
           >
             {room.participants.length < MIN
-              ? `Faltam ${MIN - room.participants.length} pessoa${MIN - room.participants.length > 1 ? "s" : ""} para poder sortear`
+              ? MIN - room.participants.length === 1
+                ? "Falta 1 pessoa para poder sortear"
+                : `Faltam ${MIN - room.participants.length} pessoas para poder sortear`
               : busy
                 ? "Misturando os papéis…"
                 : (
