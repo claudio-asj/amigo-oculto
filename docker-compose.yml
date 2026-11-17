@@ -8,6 +8,7 @@ services:
     environment:
       - DATABASE_PATH=/app/data/amigo-oculto.db
       - SITE_URL=${SITE_URL:-https://amigooculto.claudiojr.dev.br}
+      - MASTER_PASSWORD=${MASTER_PASSWORD:-}
     volumes:
       - amigo-data:/app/data
     expose:

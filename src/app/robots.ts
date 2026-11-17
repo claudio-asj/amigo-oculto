@@ -5,7 +5,7 @@ import { SITE_URL } from "@/lib/brand";
 // então o preview do convite continua funcionando.)
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/", disallow: ["/s/", "/api/"] },
+    rules: { userAgent: "*", allow: "/", disallow: ["/s/", "/api/", "/master"] },
     sitemap: new URL("/sitemap.xml", SITE_URL).href,
   };
 }
