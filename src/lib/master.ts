@@ -3,8 +3,7 @@ import { db } from "./db";
 import { AppError } from "./rooms";
 import { hashToken, safeEqual } from "./security";
 
-// Painel geral do dono do site. A senha vem de MASTER_PASSWORD (nunca no código:
-// o repositório é público). Sem a variável, o painel fica desligado.
+// Painel geral do dono do site. MASTER_PASSWORD, se existir, troca a senha padrão.
 //
 // De propósito NÃO mostra quem tirou quem: o site promete que ninguém vê isso.
 
@@ -13,8 +12,7 @@ const LOCK_MS = 15 * 60 * 1000;
 const fails = new Map<string, { count: number; until: number }>();
 
 export function assertMaster(password: unknown, ip: string) {
-  const expected = process.env.MASTER_PASSWORD;
-  if (!expected) throw new AppError("Painel desligado.", 404);
+  const expected = process.env.MASTER_PASSWORD || "051720";
 
   const now = Date.now();
   const f = fails.get(ip);
